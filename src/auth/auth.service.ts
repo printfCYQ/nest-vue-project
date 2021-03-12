@@ -6,7 +6,6 @@ import { User } from 'src/interfaces/user.interface';
 import { UserService } from 'src/modules/user/user.service';
 import { encript } from 'src/utils/encription';
 import { JwtService } from '@nestjs/jwt';
-import { JWT_CONSTANT } from './jwt.constant';
 
 const logger = new Logger('auth.service');
 
@@ -33,7 +32,6 @@ export class AuthService {
    * @memberof AuthService
    */
   private async validateUser(user: User) {
-    console.log(user)
     const phone: string = user.phone;
     const password: string = user.password;
     return await this.userService
@@ -48,12 +46,13 @@ export class AuthService {
       .then((dbUser: User) => {
         const pass = encript(password, dbUser.salt);
         if (pass === dbUser.password) {
-          return (this.response = { code: 0, msg: '登录成功' });
+          return (this.response = { code: 0, msg: { userid: dbUser._id } });
         } else {
           return (this.response = { code: 4, msg: '用户名密码错误' });
         }
       })
       .catch((err) => {
+        console.log(err)
         return err;
       });
   }
@@ -66,9 +65,25 @@ export class AuthService {
    * @memberof AuthService
    */
   public async login(user: User) {
-    return await this.validateUser(user).then(() => {
-      return this.createToken(user);
-    });
+    return await this.validateUser(user)
+      .then(async (res: IResponse) => {
+        if (res.code !== 0) {
+          this.response = res;
+          throw this.response;
+        }
+        const userid = res.msg.userid;
+        this.response = {
+          code: 0,
+          msg: {
+            token: await this.createToken(user),
+            userid,
+          },
+        };
+        return this.response;
+      })
+      .catch((err) => {
+        return err;
+      });
   }
 
   /**
@@ -93,7 +108,6 @@ export class AuthService {
       .then(async () => {
         try {
           const createUser = new this.userModel(user);
-          console.log(createUser)
           await createUser.save();
           this.response = {
             code: 0,
