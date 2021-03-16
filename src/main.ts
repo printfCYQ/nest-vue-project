@@ -18,7 +18,7 @@ const bootstrap = async () => {
    * Swagger
    */
   const config = new DocumentBuilder()
-    .setTitle('项目管理平台')
+    .setTitle('项目管理平台11')
     .setDescription('cyq-项目管理平台-接口文档')
     .setVersion('1.0')
     .addBearerAuth(
@@ -38,6 +38,9 @@ const bootstrap = async () => {
    * Log4
    */
   app.useLogger(app.get(Log4jsLogger));
+
+  /**允许跨域 */
+  app.enableCors()
 
   await app.listen(listenPort);
 };

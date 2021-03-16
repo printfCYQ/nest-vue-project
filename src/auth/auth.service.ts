@@ -6,13 +6,14 @@ import { User } from 'src/interfaces/user.interface';
 import { UserService } from 'src/modules/user/user.service';
 import { encript } from 'src/utils/encription';
 import { JwtService } from '@nestjs/jwt';
-
+var svgCaptcha = require('svg-captcha')
 const logger = new Logger('auth.service');
 
 @Injectable()
 export class AuthService {
   private response: IResponse;
-
+  private pointer: number = 0
+  private captchas = {}
   // jwtService = new JwtService({
   //   secret: JWT_CONSTANT.secret,
   //   signOptions: { expiresIn: '1h' },
@@ -52,7 +53,7 @@ export class AuthService {
         }
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
         return err;
       });
   }
@@ -130,6 +131,27 @@ export class AuthService {
 
   /**
    *
+   * 用户修改密码
+   * @param {User} user
+   * @return {*}
+   * @memberof AuthService
+   */
+  public async alter(user: User) {
+    return this.userService.findOneByPhone(user.phone).then(async () => {
+      return await this.userModel
+        .findOneAndUpdate({ phone: user.phone }, user, {}, () => {
+          logger.log(`用户${user.phone}修改密码成功`);
+        })
+        .then(() => {
+          return (this.response = {
+            code: 0,
+            msg: '密码修改成功',
+          });
+        });
+    });
+  }
+  /**
+   *
    * 创建token
    * @private
    * @param {User} user
@@ -138,5 +160,40 @@ export class AuthService {
    */
   private async createToken(user: User) {
     return await this.jwtService.sign(user);
+  }
+
+
+  /**
+   * 创建验证码
+   * @param id 
+   * @returns 
+   */
+  public async createCaptcha(id:string){
+    if(id !== '-1'){
+      delete this.captchas[id]
+      console.log(`删除了id为${id}的记录`)
+    }
+    const c = svgCaptcha.create()
+    this.captchas[this.pointer] = c.text
+    this.response  = {
+      code:0,
+      msg:{
+        id:this.pointer++,
+        img:c.data
+      }
+    }
+    return this.response
+  }
+
+  public async verification(captcha:string,id:string){
+    console.log(captcha,id)
+    console.log(this.captchas[id])
+    if(this.captchas[id].toLocaleLowerCase() === captcha.toLocaleLowerCase()) {
+      this.response = {code:0,msg:'验证通过'}
+      return this.response
+    }else{
+      this.response = {code:5,msg:'验证码错误'}
+      return this.response
+    }
   }
 }

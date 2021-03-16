@@ -28,6 +28,10 @@ import { HashPasswordMiddleware } from 'src/middlewares/hash-password.middleware
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(HashPasswordMiddleware).forRoutes('auth/regist');
+    consumer
+      .apply(HashPasswordMiddleware)
+      .forRoutes('auth/regist')
+      .apply(HashPasswordMiddleware)
+      .forRoutes('auth/alter');
   }
 }

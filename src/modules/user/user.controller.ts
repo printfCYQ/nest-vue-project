@@ -1,15 +1,17 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { UserService } from './user.service';
 
 @Controller('user')
 @ApiTags('用户模块')
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth('jwt')
 export class UserController {
+  constructor(private userSerive: UserService) {}
 
   @Get('hello')
   hello() {
-    return 'hello world';
+    return this.userSerive.hello();
   }
 }
