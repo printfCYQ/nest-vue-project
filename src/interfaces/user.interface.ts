@@ -7,7 +7,7 @@ export class User extends Document {
   @Prop()
   @ApiProperty({
     description: '用户手机号',
-    example: '15812345687',
+    example: '15811111111',
   })
   readonly phone: string;
 
