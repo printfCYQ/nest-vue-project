@@ -1,5 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ProjectSchema } from './schema/project.schema';
 import { UserSchema } from './schema/user.schema';
 
 const MONGO_MODELS = MongooseModule.forFeature([
@@ -7,7 +8,11 @@ const MONGO_MODELS = MongooseModule.forFeature([
     name: 'USER_MODEL',
     schema: UserSchema,
     collection: 'user',
-  },
+  },{
+    name: 'PROJECT_MODEL',
+    schema: ProjectSchema,
+    collection: 'project',
+  }
 ]);
 
 const MONGO_CON = MongooseModule.forRoot(

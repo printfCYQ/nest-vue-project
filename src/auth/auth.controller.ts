@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/interfaces/user.interface';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
+@ApiTags('登录管理模块')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
