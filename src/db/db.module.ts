@@ -1,5 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { KindSchema } from './schema/kind.schema';
 import { ProjectSchema } from './schema/project.schema';
 import { UserSchema } from './schema/user.schema';
 
@@ -12,6 +13,10 @@ const MONGO_MODELS = MongooseModule.forFeature([
     name: 'PROJECT_MODEL',
     schema: ProjectSchema,
     collection: 'project',
+  },{
+    name: 'KIND_MODEL',
+    schema: KindSchema,
+    collection: 'kind',
   }
 ]);
 

@@ -68,7 +68,7 @@ export class ProjectService {
 
     /**
      *
-     * 查询项目
+     * 查询项目(byId)
      */
     public async findProject(projectId: string) {
         try {
@@ -85,7 +85,7 @@ export class ProjectService {
      *
      * 查询All项目
      */
-    public async findAllProject() {
+    public async findProjectAll() {
         try {
             const data = await this.projectModel.find()
             this.response = { code: 0, msg: { msg: '查询成功', data: data } }
@@ -95,4 +95,60 @@ export class ProjectService {
             return this.response
         }
     }
+
+
+    /**
+     *
+     * 按分类查询项目
+     */
+    public async findProjectByKind(kind: string) {
+        try {
+            const data = await this.projectModel.find().where({
+                kind: kind,
+            })
+            this.response = { code: 0, msg: { msg: '查询成功', data: data } }
+        } catch (error) {
+            this.response = { code: 7, msg: { msg: '项目查询失败' } }
+        } finally {
+            return this.response
+        }
+    }
+
+
+    /**
+     *
+     * 查询项目(分页)(分类)
+     */
+    public async findProjectByKindPage(kind: string, pageObj: any) {
+        let total: number = 0;
+
+        if (pageObj) {
+            var skip = (pageObj.currentPage - 1) * pageObj.pageSize
+            var limit = pageObj.pageSize
+        }
+        try {
+            if (kind === '0') {
+                total = (await this.findProjectAll()).msg.data.length
+                const data = await this.projectModel.find().skip(skip).limit(limit).sort({
+                    _id: -1,
+                })
+                this.response = { code: 0, msg: { msg: '查询成功', data: data, total: total } }
+            } else {
+                total = (await this.findProjectByKind(kind)).msg.data.length
+                const data = await this.projectModel.find().skip(skip).limit(limit).sort({
+                    _id: -1,
+                }).where({
+                    kind: kind,
+                })
+                this.response = { code: 0, msg: { msg: '查询成功', data: data, total: total } }
+            }
+
+        } catch (error) {
+            this.response = { code: 7, msg: { msg: '项目查询失败' } }
+        } finally {
+            return this.response
+        }
+    }
+
+
 }

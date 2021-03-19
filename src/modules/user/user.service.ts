@@ -30,6 +30,17 @@ export class UserService {
     });
   }
 
+  public async findOneById(userid: string) {
+    try {
+      const data = await this.userModel.findById(userid)
+      this.response = { code: 0, msg: { msg: '查询成功', data } }
+    } catch (error) {
+      this.response = { code: 7, msg: { msg: '查询失败' } }
+    } finally {
+      return this.response
+    }
+  }
+
   public async hello() {
     //  return await this.redis.set('management', 'hello world');
     return {

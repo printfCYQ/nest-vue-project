@@ -40,7 +40,7 @@ export class ProjectController {
 
     @Post('find/:id')
     @ApiOperation({
-        summary: '查询项目'
+        summary: '查询项目byid'
     })
     public findProject(@Param('id') projectId: string) {
         return this.projectService.findProject(projectId)
@@ -50,7 +50,24 @@ export class ProjectController {
     @ApiOperation({
         summary: '查询All项目'
     })
-    public findAllProject() {
-        return this.projectService.findAllProject()
+    public findProjectAll() {
+        return this.projectService.findProjectAll()
+    }
+
+
+    @Post('findByKind/:id')
+    @ApiOperation({
+        summary: '按分类查询'
+    })
+    public findByKind(@Param('id') kindId: string) {
+        return this.projectService.findProjectByKind(kindId)
+    }
+
+    @Post('findProjectByKindPage/:id')
+    @ApiOperation({
+        summary: '按分类查询(分类)(分页)'
+    })
+    public findByKindPage(@Param('id') kindId: string, @Body() pageObj: any) {
+        return this.projectService.findProjectByKindPage(kindId, pageObj)
     }
 }
