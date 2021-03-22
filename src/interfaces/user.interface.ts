@@ -2,6 +2,11 @@ import { Prop, Schema } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document } from 'mongoose';
 
+export interface IUserProject {
+  projectId: string,
+  identity: string
+}
+
 @Schema()
 export class User extends Document {
   @Prop()
@@ -17,6 +22,9 @@ export class User extends Document {
     example: '123456',
   })
   readonly password: string;
+
+  @Prop()
+  readonly projects?: Array<IUserProject>;
 
   @Prop()
   readonly salt?: string;

@@ -70,4 +70,14 @@ export class ProjectController {
     public findByKindPage(@Param('id') kindId: string, @Body() pageObj: any) {
         return this.projectService.findProjectByKindPage(kindId, pageObj)
     }
+
+
+
+    @Post('getProjectsByUser/:id')
+    @ApiOperation({
+        summary: '获取当前用户的所有项目'
+    })
+    public getProjectsByUser(@Param('id') userid: string, @Body() pageObj: any) {
+        return this.projectService.getProjectsByUser(userid, pageObj)
+    }
 }
