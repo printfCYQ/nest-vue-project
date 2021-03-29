@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { RedisModule, RedisModuleOptions } from 'nestjs-redis';
 import { ProjectModule } from './modules/project/project.module';
 import { KindModule } from './modules/kind/kind.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 const options: RedisModuleOptions = {
   port: 6379,
@@ -24,6 +25,10 @@ const options: RedisModuleOptions = {
     RedisModule.register(options),
     ProjectModule,
     KindModule,
+    MulterModule.register({
+      // 本地存储
+      dest: 'uploads',
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

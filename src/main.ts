@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Log4jsLogger } from '@nestx-log4js/core';
 import { AppModule } from './app.module';
@@ -12,7 +13,10 @@ const logger = new Logger('main.ts');
  *主方法
  */
 const bootstrap = async () => {
-  const app = await NestFactory.create(AppModule);
+  // const app = await NestFactory.create(AppModule);
+
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
 
   /**
    * Swagger
@@ -41,6 +45,11 @@ const bootstrap = async () => {
 
   /**允许跨域 */
   app.enableCors()
+
+  // 静态文件托管
+  app.useStaticAssets('uploads', {
+    prefix: '/uploads',
+  });
 
   await app.listen(listenPort);
 };

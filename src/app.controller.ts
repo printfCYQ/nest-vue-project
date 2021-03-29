@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AppService } from './app.service';
 
@@ -13,5 +14,17 @@ export class AppController {
   })
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async upload(@UploadedFile('file') file) {
+    // 云储存
+    // return file
+    console.log(file)
+    // 本地存储
+    return {
+      url: `http://localhost:3000/uploads/${file.filename}`,
+    };
   }
 }
